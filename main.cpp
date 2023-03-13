@@ -79,7 +79,7 @@ int main(int argc, char **argv){
                     fprintf(stderr, "Error: cannot open file %s\n", argv[2]);
                     exit(0);
                 }
-                fprintf(fp, "%d", heap->size);
+                fprintf(fp, "%d\n", heap->size);
                 for (int i =0;i<heap->size;i++){
                     fprintf(fp, "%lf\n", heap->H[i]->key);
                 }
