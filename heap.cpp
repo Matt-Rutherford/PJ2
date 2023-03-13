@@ -1,26 +1,25 @@
+//Matthew Rutherford 1227041896
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
 #include "util.h"
 #include "heap.h"
 #include "data_structures.h"
+#include <limits>
 
-HEAP* init(HEAP *heap, int capacity){//init not correct
-    heap = new HEAP;
-    ELEMENT *h [capacity];
-    for (int i = 0; i < capacity;i++){
-        ELEMENT *e = new ELEMENT;
-        h[i] = e;
-        h[i]->key = 0;
-    }
-    for (int i = 0; i < capacity;i++){
-        printf("%lf", heap->H[i]->key);
-    }
-    heap->H = h;
+HEAP* init(HEAP *heap, int capacity){
+    heap->H = new ELEMENT * [capacity];
     heap->capacity = capacity;
     heap->size = 0;
     return heap;
 
+}
+
+void buildMinHeap(HEAP *heap) {
+    int n = heap->size;
+    for (int i = (n / 2) - 1; i >= 0; i--) {
+        heapify(heap, n);
+    }
 }
 void heapify(HEAP *heap, int index){
     int smallest = index;
@@ -34,27 +33,36 @@ void heapify(HEAP *heap, int index){
         swap(&heap->H[index], &heap->H[smallest]);
         heapify(heap, smallest);
     }
-    }
-void   heapInsert(HEAP *heap, double key){
-    if (heap->size == heap->capacity) {
-        fprintf(stderr, "Error: heap is full\n");
+}
+
+void decreaseKey(HEAP* heap, int position, double newKey) {
+    //printf("%lf", heap->H[position]->key);
+    if (newKey > heap->H[position]->key) {
+        fprintf(stderr, "Error: new key is larger than current key\n");
         return;
     }
-    
-    //element->key = key;
-    heap->H[heap->size]->key = key;
-    int i = heap->size;
-    while (i > 0 && heap->H[(i-1)/2]->key > heap->H[i]->key) {
-        swap(&heap->H[i], &heap->H[(i-1)/2]);
-        i = (i-1)/2;
+    else {
+        heap->H[position]->key = newKey;
+        while (position > 0 && heap->H[(position - 1) / 2]->key > heap->H[position]->key) {
+            swap(&heap->H[position], &heap->H[(position - 1) / 2]);
+            position = (position - 1) / 2;
+        }
     }
+   
+}
+void   heapInsert(HEAP *heap, double key){
     heap->size++;
+    ELEMENT* e = new ELEMENT;
+    e->key = std::numeric_limits<double>::max();
+
+    int i = heap->size-1;
+    heap->H[i] = e;
+    decreaseKey(heap, i, key); 
+
+ 
 }
 double   extractMin(HEAP *heap){
-    if (heap->size == 0) {
-        fprintf(stderr, "Error: heap is empty\n");
-        return -1;
-    }
+    
     double min_key = heap->H[0]->key;
     heap->H[0] = heap->H[heap->size-1];
     heap->size--;
@@ -63,25 +71,13 @@ double   extractMin(HEAP *heap){
 }
 
 void printHeap(HEAP *heap){
-    fprintf(stdout,"%d", heap->size );
+    fprintf(stdout,"%d\n", heap->size );
     for (int i=0; i<heap->size;i++){
         fprintf(stdout, "%lf\n", heap->H[i]->key);
         
     }
 }
-void decreaseKey(HEAP *heap, int position, double newKey){
-    if (newKey > heap->H[position]->key) {
-        fprintf(stderr, "Error: new key is larger than current key\n");
-        return;
-    }
-    heap->H[position]->key = newKey;
-    while (position > 0 && heap->H[(position-1)/2]->key > heap->H[position]->key) {
-        swap(&heap->H[position], &heap->H[(position-1)/2]);
-        position = (position-1)/2;
-    }
 
-    
-}
 
 void swap(ELEMENT **a, ELEMENT **b){
     ELEMENT *temp = *a;

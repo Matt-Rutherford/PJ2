@@ -3,23 +3,28 @@
 #include <string.h>
 #include "util.h"
 #include "heap.h"
-
+#include <limits>
+//Matthew Rutherford 1227041896
 int main(int argc, char **argv){
     
-    HEAP *heap;
+    HEAP* heap = NULL;
     
     FILE *fp;
-    int capacity, size, n, position;
+    int capacity, n, position;
 
     double key;
     int returnV;
     char Word[100];
-
+    bool flag = 0;
+    /*
     if (argc < 4){
         fprintf(stderr, "Usage: %s <ifile> <ofile> Flag\n", argv[0]);
         exit(0);
     }
-
+    if (argv[3] == "1") {
+        flag = 1;
+    }
+    */
     while (1){
         returnV = fscanf(stdin, "%s", Word);
         
@@ -38,12 +43,14 @@ int main(int argc, char **argv){
         if(strcmp(Word, "Init")==0){
             
             capacity = key;
-            heap = init(heap, capacity);
-            
-            if (!heap){
+            heap = new HEAP;
+            if (!heap) {
                 fprintf(stderr, "Error: calloc failed\n");
                 exit(0);
             }
+            heap = init(heap, capacity);
+            
+            
             
         }
 
@@ -56,9 +63,12 @@ int main(int argc, char **argv){
                 fprintf(stderr, "Warning: Heap is NULL\n");
                 continue;
             }
-            printHeap(heap);
-            fprintf(stdout, "\n");
-            continue;
+            else {
+                printHeap(heap);
+                fprintf(stdout, "\n");
+                continue;
+            }
+           
         }
 
         if (strcmp(Word, "Write")==0){
@@ -90,12 +100,21 @@ int main(int argc, char **argv){
                     fprintf(stderr, "Error: cannot open file %s\n", argv[1]);
                     exit(0);
                 }
-                fscanf(fp, "%d", &n);
-                for (int i = 0; i<n;i++){
-                    returnV = fscanf(fp, "%lf", &heap->H[i]->key);
-                    heap->size++;
+                returnV = fscanf(fp, "%d", &n);
+
+                if (heap->capacity < n) {
+                    fprintf(stderr, "Error: size of input is larger than capacity %s\n", argv[1]);
+                    fclose(fp);
+                    exit(0);
                 }
-             
+
+                for (int i = 0, j = capacity; i<n;i++,j++){
+                    ELEMENT *e = new ELEMENT;
+                    returnV = fscanf(fp, "%lf", e->key);
+                    heap->H[i] = e;
+                }
+                heap->size += n;
+                buildMinHeap(heap);
                 fclose(fp);
             } else {
                 fprintf(stderr, "Error: heap is NULL\n");
@@ -106,8 +125,32 @@ int main(int argc, char **argv){
 
 
         if (strcmp(Word, "Insert")==0){
-            heapInsert(heap, key);
+            if (heap == NULL) {
+                fprintf(stderr, "Error: heap is NULL\n");
+                continue;
+            }
+            else if (heap->size == heap->capacity) {
+                fprintf(stderr, "Error: heap is full\n");
+                continue;
+            }
+            else {
+                heapInsert(heap, key);
+            }
             continue;
+        }
+        if (strcmp(Word, "ExtractMin") == 0) {
+            if (heap == NULL) {
+                fprintf(stderr, "Error: heap is NULL\n");
+                continue;
+            }
+            else if (heap->size == 0) {
+                fprintf(stderr, "Error: heap is empty\n");
+                continue;
+            }
+            else {
+                double Key = extractMin(heap);
+                fprintf(stdout, "ExtractMin: %lf\n", Key);
+            }
         }
 
     }
