@@ -16,15 +16,15 @@ int main(int argc, char **argv){
     int returnV;
     char Word[100];
     bool flag = 0;
-    /*
+    
     if (argc < 4){
         fprintf(stderr, "Usage: %s <ifile> <ofile> Flag\n", argv[0]);
         exit(0);
     }
-    if (argv[3] == "1") {
+    if (strcmp(argv[3], "1")==0) {
         flag = 1;
     }
-    */
+    
     while (1){
         returnV = fscanf(stdin, "%s", Word);
         
