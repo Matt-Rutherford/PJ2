@@ -18,7 +18,7 @@ HEAP* init(HEAP *heap, int capacity){
 void buildMinHeap(HEAP *heap) {
     int n = heap->size;
     for (int i = (n / 2) - 1; i >= 0; i--) {
-        heapify(heap, n);
+        heapify(heap, i);
     }
 }
 void heapify(HEAP *heap, int index){

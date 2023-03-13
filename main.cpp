@@ -65,7 +65,7 @@ int main(int argc, char **argv){
             }
             else {
                 printHeap(heap);
-                fprintf(stdout, "\n");
+                //fprintf(stdout, "\n");
                 continue;
             }
            
@@ -109,10 +109,10 @@ int main(int argc, char **argv){
                 }
                 
                 double newKey = 0;
-                for (int i = 0, j = heap->size; i<n;i++,j++){
+                for (int i = 0; i<n;i++){
                     ELEMENT *e = new ELEMENT;
                     returnV = fscanf(fp, "%lf", &e->key);
-                    heap->H[i] = e;
+                    heap->H[i+heap->size] = e;
                 }
                 
                 heap->size += n;
