@@ -93,7 +93,7 @@ int main(int argc, char **argv){
 
 
         if (strcmp(Word, "Read")==0){
-
+            
             if (heap != NULL){
                 fp = fopen(argv[1], "r");
                 if (!fp){
@@ -101,20 +101,23 @@ int main(int argc, char **argv){
                     exit(0);
                 }
                 returnV = fscanf(fp, "%d", &n);
-
-                if (heap->capacity < n) {
+                
+                if (heap->capacity < (heap->size + n)) {
                     fprintf(stderr, "Error: size of input is larger than capacity %s\n", argv[1]);
                     fclose(fp);
                     exit(0);
                 }
-
-                for (int i = 0, j = capacity; i<n;i++,j++){
+                
+                double newKey = 0;
+                for (int i = 0, j = heap->size; i<n;i++,j++){
                     ELEMENT *e = new ELEMENT;
-                    returnV = fscanf(fp, "%lf", e->key);
+                    returnV = fscanf(fp, "%lf", &e->key);
                     heap->H[i] = e;
                 }
+                
                 heap->size += n;
                 buildMinHeap(heap);
+                
                 fclose(fp);
             } else {
                 fprintf(stderr, "Error: heap is NULL\n");
