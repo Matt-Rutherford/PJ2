@@ -1,10 +1,11 @@
+//Matthew Rutherford 1227041896
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "util.h"
 #include "heap.h"
 #include <limits>
-//Matthew Rutherford 1227041896
+
 int main(int argc, char **argv){
     
     HEAP* heap = NULL;
@@ -27,19 +28,19 @@ int main(int argc, char **argv){
     
     while (1){
         returnV = fscanf(stdin, "%s", Word);
-        
         if (strcmp(Word, "DecreaseKey")==0){
             returnV = nextInstruction(Word, &position, &key);
+
         } else {           
             returnV = nextInstruction(Word, &key);
         }
-        
-
+    
         if (returnV == 0){
             fprintf(stderr, "Warning: Invalid instruction\n");
             continue;
         }
-
+                
+        
         if(strcmp(Word, "Init")==0){
             
             capacity = key;
@@ -49,9 +50,9 @@ int main(int argc, char **argv){
                 exit(0);
             }
             heap = init(heap, capacity);
-            
-            
-            
+         
+            heap->heapify = flag;
+             
         }
 
         if (strcmp(Word, "Stop")==0){
@@ -105,20 +106,28 @@ int main(int argc, char **argv){
                 if (heap->capacity < (heap->size + n)) {
                     fprintf(stderr, "Error: size of input is larger than capacity %s\n", argv[1]);
                     fclose(fp);
-                    exit(0);
+                    
+                } else {
+                    if (heap->H[0]!=NULL){//wipe current heap
+                        for (int i = 0; i<heap->size;i++){
+                            if (heap->H[i] !=NULL){
+                                delete heap->H[i];
+                            }
+                            heap->size = 0;
+                            
+                    }
+                    }
+                    for (int i = 0; i<n;i++){
+                        ELEMENT *e = new ELEMENT;
+                        returnV = fscanf(fp, "%lf", &e->key);
+                        heap->H[i+heap->size] = e;
+                    }
+                    
+                    heap->size += n;
+                    buildMinHeap(heap);
+                    fclose(fp);
                 }
                 
-                double newKey = 0;
-                for (int i = 0; i<n;i++){
-                    ELEMENT *e = new ELEMENT;
-                    returnV = fscanf(fp, "%lf", &e->key);
-                    heap->H[i+heap->size] = e;
-                }
-                
-                heap->size += n;
-                buildMinHeap(heap);
-                
-                fclose(fp);
             } else {
                 fprintf(stderr, "Error: heap is NULL\n");
             }
@@ -155,6 +164,20 @@ int main(int argc, char **argv){
                 fprintf(stdout, "ExtractMin: %lf\n", Key);
             }
         }
+         if (strcmp(Word, "DecreaseKey")==0){
+            position = position-1;
+            if (heap == NULL){
+                fprintf(stderr, "Error: heap is NULL\n");
+                continue;
+            } else if (heap->size == 0){
+                fprintf(stderr, "Error: heap is empty\n");
+                continue;
+            } else if (position > heap->size || key >= heap->H[position]->key){
+                fprintf(stderr, "Error: invalid call to DecreaseKey\n");
+            } else {
+                decreaseKey(heap, position, key);
+            }
+        } 
 
     }
 

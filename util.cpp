@@ -11,6 +11,7 @@ int nextInstruction(char *Word, double *key)
     if (strcmp(Word, "Print")==0) return 1;
     if (strcmp(Word, "Write")==0) return 1;
     if (strcmp(Word, "Read")==0) return 1;
+    if (strcmp(Word, "ExtractMin")==0) return 1;
 
     if (strcmp(Word, "Insert")==0){
         returnV = fscanf(stdin, "%lf", key);
@@ -42,13 +43,15 @@ int nextInstruction(char *Word, int *position, double *key)
         returnV = fscanf(stdin, "%d %lf", position, key);
         if (returnV == 0){
             return 0;
-        }
+        }else {
+            return 1;
+            }/*
         returnV = fscanf(stdin, "%lf", key);
         if (returnV == 1){
             return 1;
         }else{
             return 0;
-        }
+        }*/
     }
     return 0;
 }

@@ -9,6 +9,7 @@ typedef struct TAG_ELEMENT{
     }ELEMENT;
 
 typedef struct TAG_HEAP{
+    int heapifies;
     bool heapify;
     int capacity; /* capacity of the heap */
     int size; /* current size of the heap */
